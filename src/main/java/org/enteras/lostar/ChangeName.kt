@@ -18,5 +18,11 @@ class ChangeNameListener(private val plugin: JavaPlugin) : Listener {
             player.setDisplayName("${ChatColor.of("#90d2f8")}${ChatColor.BOLD}DEV ${ChatColor.of("#FFFFFF")}${ChatColor.BOLD}百鬼れだる${ChatColor.YELLOW}⚝")
             player.setPlayerListName("${ChatColor.of("#90d2f8")}${ChatColor.BOLD}DEV ${ChatColor.of("#FFFFFF")}${ChatColor.BOLD}百鬼れだる${ChatColor.YELLOW}⚝")
         }
+
+        if (player.name == "Xx_KOIJI_xX") {
+            // 플레이어의 표시 이름과 플레이어 리스트 이름을 변경
+            player.setDisplayName("${ChatColor.of("#90d2f8")}${ChatColor.BOLD}DEV ${ChatColor.of("#FFFFFF")}Xx_KOIJI_xX")
+            player.setPlayerListName("${ChatColor.of("#90d2f8")}${ChatColor.BOLD}DEV ${ChatColor.of("#FFFFFF")}Xx_KOIJI_xX")
+        }
     }
 }
