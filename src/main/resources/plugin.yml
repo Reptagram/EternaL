@@ -4,4 +4,6 @@ main: org.enteras.lostar.EternaL
 api-version: '1.21'
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23
-
+dev:
+    description: Dev command
+    usage: /dev NakiriSword

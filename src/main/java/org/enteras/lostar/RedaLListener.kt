@@ -23,23 +23,24 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class NakiriAyameListener(private val plugin: JavaPlugin) : Listener {
+class RedaLListener(private val plugin: JavaPlugin) : Listener {
 
     companion object {
-        val BOSS_NAME = "${ChatColor.DARK_RED}${ChatColor.BOLD}[BOSS]${ChatColor.RED}[Lv.500] ${ChatColor.WHITE}百鬼あやめ"
+        val BOSS_NAME = "${ChatColor.DARK_RED}${ChatColor.BOLD}[BOSS]${ChatColor.RED}[Lv.500] ${ChatColor.WHITE}Reptagram"
     }
 
     private val zombieArmorStandMap = mutableMapOf<Zombie, ArmorStand>()
-    private val zombieAttackCountMap = mutableMapOf<Zombie, Int>()
-    private val isHandlingDamage = mutableSetOf<Player>()
+    private val zombieAttackCountMap = mutableMapOf<Zombie, Int>() // 좀비 카운트
 
     @EventHandler
     fun onEntitySpawn(event: EntitySpawnEvent) {
         val entity = event.entity
+
         if (entity.type == EntityType.ZOMBIE) {
             val zombie = entity as Zombie
-            if (zombie.customName == "[Lv.500] 百鬼あやめ") {
-                applyPlayerSkinToZombie(zombie, "NakiriAyame")
+
+            if (zombie.customName == "[Lv.500] Reptagram") {
+                applyPlayerSkinToZombie(zombie, "Reptagram")
                 setZombieCustomName(zombie)
                 summonArmorStand(zombie)
                 equipZombieWithWeapons(zombie)
@@ -52,13 +53,18 @@ class NakiriAyameListener(private val plugin: JavaPlugin) : Listener {
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
         val entity = event.entity
+
         if (entity.type == EntityType.ZOMBIE) {
             val zombie = entity as Zombie
             val killer = entity.killer ?: return
+
             if (zombie.customName == BOSS_NAME) {
                 LevelManager.addExperience(killer.uniqueId, 100)
             }
-            zombieArmorStandMap.remove(zombie)?.remove()
+
+            val armorStand = zombieArmorStandMap.remove(zombie)
+            armorStand?.remove()
+
             event.drops.clear()
         }
     }
@@ -66,38 +72,28 @@ class NakiriAyameListener(private val plugin: JavaPlugin) : Listener {
     @EventHandler
     fun onEntityDamage(event: EntityDamageEvent) {
         val entity = event.entity
+
         if (entity is Zombie && entity.customName == BOSS_NAME) {
             if (event.cause == EntityDamageEvent.DamageCause.FIRE || event.cause == EntityDamageEvent.DamageCause.FIRE_TICK) {
                 event.isCancelled = true
-                Bukkit.getLogger().info("${ChatColor.GREEN}Nakiri Ayame zombie is immune to fire damage.")
             }
         }
     }
 
     @EventHandler
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
-        val entity = event.entity
         val damager = event.damager
+        val entity = event.entity
+
         if (damager is Zombie && damager.customName == BOSS_NAME && entity is Player) {
             val zombie = damager
-            val player = entity
+            val currentCount = zombieAttackCountMap.getOrDefault(zombie, 0)
+            val newCount = currentCount + 1
+            zombieAttackCountMap[zombie] = newCount
 
-            if (isHandlingDamage.contains(player)) {
-                return // Prevent recursive damage handling
-            }
-
-            isHandlingDamage.add(player)
-
-            try {
-                val currentCount = zombieAttackCountMap.getOrDefault(zombie, 0)
-                val newCount = currentCount + 1
-                zombieAttackCountMap[zombie] = newCount
-                if (newCount >= 5) {
-                    inflictDamageToNearbyPlayers(zombie, 10.0, 5.0)
-                    zombieAttackCountMap[zombie] = 0
-                }
-            } finally {
-                isHandlingDamage.remove(player)
+            if (newCount >= 5) {
+                inflictDamageToNearbyPlayers(zombie, 10.0, 5.0)
+                zombieAttackCountMap[zombie] = 0
             }
         }
     }
@@ -145,7 +141,7 @@ class NakiriAyameListener(private val plugin: JavaPlugin) : Listener {
                 }
                 armorStand.teleport(zombie.location.add(0.0, 2.0, 0.0))
             }
-        }.runTaskTimer(plugin, 20L, 20L) // Adjust to less frequent updates
+        }.runTaskTimer(plugin, 0L, 1L)
     }
 
     private fun equipZombieWithWeapons(zombie: Zombie) {
@@ -155,12 +151,12 @@ class NakiriAyameListener(private val plugin: JavaPlugin) : Listener {
         val netheriteMeta: ItemMeta? = netheriteSword.itemMeta
         val ironMeta: ItemMeta? = ironSword.itemMeta
 
-        netheriteMeta?.let {
-            netheriteSword.itemMeta = it
+        if (netheriteMeta != null) {
+            netheriteSword.itemMeta = netheriteMeta
         }
 
-        ironMeta?.let {
-            ironSword.itemMeta = it
+        if (ironMeta != null) {
+            ironSword.itemMeta = ironMeta
         }
 
         zombie.equipment?.setItemInMainHand(netheriteSword)

@@ -8,6 +8,7 @@ class EternaL : JavaPlugin() {
         server.pluginManager.registerEvents(VanillaEntityExperience(), this)
         server.pluginManager.registerEvents(ChangeNameListener(this), this)
         server.pluginManager.registerEvents(NakiriAyameListener(this), this)
+        server.pluginManager.registerEvents(NakiriSwordListener(this), this)
         LevelManager.init(this)
 
         // ActionBarTask 주기적으로 실행
