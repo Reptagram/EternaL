@@ -39,7 +39,7 @@ class NakiriSwordListener(private val plugin: EternaL) : Listener {
                             val additionalDamage = calculateTrueDamage()
 
                             // Send message to the player
-                            player.sendMessage("${ChatColor.of("#FF69B4")}${ChatColor.BOLD}Sakura Blend! ${ChatColor.RESET}${ChatColor.RED}{additionalDamage}❤${ChatColor.WHITE}의 추가 공격!")
+                            player.sendMessage("${ChatColor.of("#FF69B4")}${ChatColor.BOLD}Sakura Blend! ${ChatColor.RESET}${ChatColor.RED}${additionalDamage}❤${ChatColor.WHITE}의 추가 공격!")
 
                             // Apply true damage
                             entity.damage(additionalDamage, player)
