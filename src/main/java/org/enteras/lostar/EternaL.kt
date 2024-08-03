@@ -6,6 +6,7 @@ class EternaL : JavaPlugin() {
     override fun onEnable() {
         server.pluginManager.registerEvents(SamuraiEntityListener(), this)
         server.pluginManager.registerEvents(VanillaEntityExperience(), this)
+        server.pluginManager.registerEvents(ChangeNameListener(this), this)
         LevelManager.init(this)
 
         // ActionBarTask 주기적으로 실행

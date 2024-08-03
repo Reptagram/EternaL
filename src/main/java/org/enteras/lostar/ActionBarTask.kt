@@ -23,7 +23,7 @@ class ActionBarTask(private val plugin: JavaPlugin) : BukkitRunnable() {
             }
 
             val bar = buildString {
-                append(ChatColor.RED).append(player.name).append(" [")
+                append(ChatColor.WHITE).append(player.name).append(" [")
                 append(levelDisplay)
                 append(ChatColor.WHITE).append("] ")
                 append(ChatColor.GREEN).append("|".repeat(progress))
@@ -44,6 +44,7 @@ class ActionBarTask(private val plugin: JavaPlugin) : BukkitRunnable() {
         )
 
         return buildString {
+            append(ChatColor.WHITE) // 레벨 대괄호 색상
             append('[')
             levelString.forEachIndexed { index, char ->
                 append(colors.getOrElse(index) { ChatColor.WHITE })
@@ -79,6 +80,7 @@ class ActionBarTask(private val plugin: JavaPlugin) : BukkitRunnable() {
         )
 
         return buildString {
+            append(ChatColor.WHITE) // 레벨 대괄호 색상
             append('[')
             levelString.forEachIndexed { index, char ->
                 append(colors[index % colors.size])
